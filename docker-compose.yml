@@ -1,0 +1,120 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.1
+    depends_on:
+      - web1
+      - web2
+      - web3
+
+  web1:
+    image: nginx
+    container_name: web1
+    ports:
+      - 5001:5000
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.2
+
+  web2:
+    image: nginx
+    container_name: web2
+    ports:
+      - 5002:5000
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.3
+
+  web3:
+    image: nginx
+    container_name: web3
+    ports:
+      - 5003:5000
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.4
+
+  postgres1:
+    image: postgres
+    container_name: postgres1
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./data/postgres1:/var/lib/postgresql/data
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.5
+
+  postgres2:
+    image: postgres
+    container_name: postgres2
+    restart: always
+    ports:
+      - 8081:8080
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./data/postgres2:/var/lib/postgresql/data
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.6
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgAdmin
+    restart: always
+    ports:
+      - 5050:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.7
+
+  consul:
+    image: consul
+    container_name: consul
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.8
+
+  pg_bouncer:
+    image: brainsam/pgbouncer:1.7.2
+    container_name: pgBouncer
+    restart: always
+    ports:
+      - 6432:6432
+    environment:
+       - DB_USER= ${PGBOUNCER_USER}
+       - DB_PASSWORD= ${PGBOUNCER_PASSWORD}
+       - DB_HOST= ${PGBOUNCER_HOST}
+       - DB_NAME= ${PGBOUNCER_DB}
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.9
+    depends_on:
+      - postgres1
+      - postgres2
+
+networks:
+  cloudcomputing:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.18.0.0/16
