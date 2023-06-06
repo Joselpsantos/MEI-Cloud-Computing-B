@@ -15,31 +15,33 @@ services:
   web1:
     image: nginx
     ports:
-      - "5001:5000"
+      - 5001:5000
     networks:
       - app_net
 
   web2:
     image: nginx
     ports:
-      - "5002:5000"
+      - 5002:5000
     networks:
       - app_net
 
   web3:
     image: nginx
     ports:
-      - "5003:5000"
+      - 5003:5000
     networks:
       - app_net
 
   postgres1:
     image: postgres
     restart: always
+    ports:
+      - 8080:8080
     environment:
-      POSTGRES_USER: your_username1
-      POSTGRES_PASSWORD: your_password1
-      POSTGRES_DB: your_database1
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./data/postgres1:/var/lib/postgresql/data
     networks:
@@ -48,33 +50,53 @@ services:
   postgres2:
     image: postgres
     restart: always
+    ports:
+      - 8081:8080
     environment:
-      POSTGRES_USER: your_username2
-      POSTGRES_PASSWORD: your_password2
-      POSTGRES_DB: your_database2
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./data/postgres2:/var/lib/postgresql/data
     networks:
       - app_net
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgAdmin
+    restart: always
+    ports:
+      - 5050:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+
   consul:
     image: consul
+    container_name: consul
     networks:
       - app_net
 
   pg_bouncer:
-    image: bitnami/pgbouncer:latest
+    image: brainsam/pgbouncer:1.7.2
+    container_name: pgBouncer
     restart: always
     ports:
       - 6432:6432
     environment:
-      - CONSUL_HOST=consul
-      - CONSUL_PORT=8500
-      - CONSUL_KV_PREFIX=pgbouncer
-      - AUTH_USER=your_pg_user
-      - AUTH_PASSWORD=your_pg_password
+       - DB_USER= ${PGBOUNCER_USER}
+       - DB_PASSWORD= ${PGBOUNCER_PASSWORD}
+       - DB_HOST= ${PGBOUNCER_HOST}
+       - DB_NAME= ${PGBOUNCER_DB}
+       - POOL_MODE=transaction
+       - ADMIN_USERS=postgres,dbuser
     networks:
       - app_net
+    depends_on:
+      - postgres1
+      - postgres2
 
 networks:
   app_net:
