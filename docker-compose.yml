@@ -6,7 +6,8 @@ services:
     ports:
       - 80:80
     networks:
-      - app_net
+      cloudcomputing:
+        ipv4_address: 172.18.0.1
     depends_on:
       - web1
       - web2
@@ -14,27 +15,34 @@ services:
 
   web1:
     image: nginx
+    container_name: web1
     ports:
       - 5001:5000
     networks:
-      - app_net
+      cloudcomputing:
+        ipv4_address: 172.18.0.2
 
   web2:
     image: nginx
+    container_name: web2
     ports:
       - 5002:5000
     networks:
-      - app_net
+      cloudcomputing:
+        ipv4_address: 172.18.0.3
 
   web3:
     image: nginx
+    container_name: web3
     ports:
       - 5003:5000
     networks:
-      - app_net
+      cloudcomputing:
+        ipv4_address: 172.18.0.4
 
   postgres1:
     image: postgres
+    container_name: postgres1
     restart: always
     ports:
       - 8080:8080
@@ -45,10 +53,12 @@ services:
     volumes:
       - ./data/postgres1:/var/lib/postgresql/data
     networks:
-      - app_net
+      cloudcomputing:
+        ipv4_address: 172.18.0.5
 
   postgres2:
     image: postgres
+    container_name: postgres2
     restart: always
     ports:
       - 8081:8080
@@ -59,7 +69,8 @@ services:
     volumes:
       - ./data/postgres2:/var/lib/postgresql/data
     networks:
-      - app_net
+      cloudcomputing:
+        ipv4_address: 172.18.0.6
 
   pgadmin:
     image: dpage/pgadmin4
@@ -72,12 +83,16 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
+    networks:
+      cloudcomputing:
+        ipv4_address: 172.18.0.7
 
   consul:
     image: consul
     container_name: consul
     networks:
-      - app_net
+      cloudcomputing:
+        ipv4_address: 172.18.0.8
 
   pg_bouncer:
     image: brainsam/pgbouncer:1.7.2
@@ -90,13 +105,16 @@ services:
        - DB_PASSWORD= ${PGBOUNCER_PASSWORD}
        - DB_HOST= ${PGBOUNCER_HOST}
        - DB_NAME= ${PGBOUNCER_DB}
-       - POOL_MODE=transaction
-       - ADMIN_USERS=postgres,dbuser
     networks:
-      - app_net
+      cloudcomputing:
+        ipv4_address: 172.18.0.9
     depends_on:
       - postgres1
       - postgres2
 
 networks:
-  app_net:
+  cloudcomputing:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.18.0.0/16
