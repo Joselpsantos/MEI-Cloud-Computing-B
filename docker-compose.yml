@@ -2,12 +2,18 @@ version: '3'
 
 services:
   nginx:
-    image: nginx:latest
+    #image: nginx:latest - não é necessário pois foi definido no Dockerfile
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: loadBalancer
     ports:
       - 80:80
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.1
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.1
+    volumes:
+      - ./app:/usr/share/nginx/html
     depends_on:
       - web1
       - web2
@@ -17,29 +23,35 @@ services:
     image: nginx
     container_name: web1
     ports:
-      - 5001:5000
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.2
+      - 5001:80
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.2
+    volumes:
+      - ./app:/usr/share/nginx/html
+
 
   web2:
     image: nginx
     container_name: web2
     ports:
-      - 5002:5000
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.3
+      - 5002:80
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.3
+    volumes:
+      - ./app:/usr/share/nginx/html   
 
   web3:
     image: nginx
     container_name: web3
     ports:
-      - 5003:5000
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.4
-
+      - 5003:80
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.4
+    volumes:
+      - ./app:/usr/share/nginx/html
   postgres1:
     image: postgres
     container_name: postgres1
