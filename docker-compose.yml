@@ -30,7 +30,6 @@ services:
     volumes:
       - ./app:/usr/share/nginx/html
 
-
   web2:
     image: nginx
     container_name: web2
@@ -52,6 +51,7 @@ services:
     #    ipv4_address: 172.18.0.4
     volumes:
       - ./app:/usr/share/nginx/html
+
   postgres1:
     image: postgres
     container_name: postgres1
@@ -100,8 +100,13 @@ services:
         ipv4_address: 172.18.0.7
 
   consul:
-    image: consul
+    build:
+      context: ./consul
+      dockerfile: Dockerfile
+    #image: consul
     container_name: consul
+    ports:
+      - 9990:8500
     networks:
       cloudcomputing:
         ipv4_address: 172.18.0.8
