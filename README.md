@@ -23,10 +23,13 @@ Repositório para a solução da parte B do projeto final de cloud computing
 | dataset-C | [download]() |
 
 ## Use
-- for train
+- Ligar ao postgres via pgAdmin
   ```
-  python train.py
+  http://localhost:5050
   ```
+  colocar o address: <ip_maquina_postgress>, port: 5432
+
+  
 - for test
   ```
   python test.py

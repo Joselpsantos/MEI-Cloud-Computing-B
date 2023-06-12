@@ -20,7 +20,9 @@ services:
       - web3
 
   web1:
-    image: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     container_name: web1
     ports:
       - 5001:80
@@ -57,32 +59,36 @@ services:
     container_name: postgres1
     restart: always
     ports:
-      - 8080:8080
+      - 5442:5432
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./data/postgres1:/var/lib/postgresql/data
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.5
+      - pg-config:/etc/postgresql
+    entrypoint: docker-entrypoint.sh -c 'config_file=/etc/postgresql/postgresql.conf'
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.5
 
   postgres2:
     image: postgres
     container_name: postgres2
     restart: always
     ports:
-      - 8081:8080
+      - 5443:5432
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./data/postgres2:/var/lib/postgresql/data
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.6
+      - pg-config:/etc/postgresql
+    entrypoint: docker-entrypoint.sh -c 'config_file=/etc/postgresql/postgresql.conf'
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.6
 
   pgadmin:
     image: dpage/pgadmin4
@@ -95,9 +101,11 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.7
+    links:
+    - pg_bouncer:pg_bouncer
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.7
 
   consul:
     build:
@@ -107,9 +115,9 @@ services:
     container_name: consul
     ports:
       - 9990:8500
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.8
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.8
 
   pg_bouncer:
     image: brainsam/pgbouncer:1.7.2
@@ -122,12 +130,25 @@ services:
        - DB_PASSWORD= ${PGBOUNCER_PASSWORD}
        - DB_HOST= ${PGBOUNCER_HOST}
        - DB_NAME= ${PGBOUNCER_DB}
-    networks:
-      cloudcomputing:
-        ipv4_address: 172.18.0.9
+       - DB_port= 5442
+    volumes:
+      - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+    links:
+      - postgres1
+    #networks:
+    #  cloudcomputing:
+    #    ipv4_address: 172.18.0.9
     depends_on:
       - postgres1
       - postgres2
+
+volumes:
+  pg-config:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "postgres"
 
 networks:
   cloudcomputing:
