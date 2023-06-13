@@ -8,7 +8,17 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Instalar dependências necessárias
-RUN apt-get install -y curl gnupg wget sudo
+RUN apt-get install -y curl gnupg wget sudo php-fpm
+
+# Configurar o php
+RUN sudo mkdir -p /run/php
+RUN sudo chown www-data:www-data /run/php
+RUN sudo chmod 755 /run/php
+
+# ...
+
+# Instale o pacote para verificar o serviço PHP-FPM
+
 
 # Adicionar a chave GPG do HashiCorp
 RUN wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
@@ -24,4 +34,4 @@ RUN apt-get update \
 # COPY consul-config /etc/consul/
 
 # Iniciar o Nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;","/usr/local/bin/check-php-fpm.sh"]
