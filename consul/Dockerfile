@@ -4,7 +4,7 @@ FROM consul:latest
 RUN apk add --no-cache sudo nano
 
 # Geração e gravação da keygen
-RUN consul keygen > /consul/consul-key.txt
+RUN consul keygen > /consul/certs/consul-key.txt
 
 # Criação dos certificados
 WORKDIR /consul/certs
@@ -15,6 +15,8 @@ WORKDIR /
 # Copiar a configuração consul
 COPY consul.hcl /etc/consul.d/
 COPY server.hcl /etc/consul.d/
+RUN sudo chmod 640 /etc/consul.d/consul.hcl
+RUN sudo chmod 640 /etc/consul.d/server.hcl
 
 #
 #RUN cd ./consul 

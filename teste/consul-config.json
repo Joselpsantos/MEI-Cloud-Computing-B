@@ -1,0 +1,19 @@
+{
+    "datacenter": "consul",
+    "node_name": "web1",
+    "bind_addr": "0.0.0.0",
+    "client_addr": "0.0.0.0",
+    "log_level": "DEBUG",
+    "check_update_interval": "1m",
+    "enable_script_checks": true,
+    "ca_file": "/etc/consul.d/certs/ca.crt",
+    "cert_file": "/etc/consul.d/certs/consul.crt",
+    "key_file": "/etc/consul.d/certs/consul.key",
+    "retry_join": ["consul-server-1", "consul-server-2", "consul-server-3"],
+    "template": {
+        "source": "/templates/my-service.conf.ctmpl",
+        "destination": "/etc/my-service/my-service.conf",
+        "command": "service my-service restart"
+        }
+}
+      

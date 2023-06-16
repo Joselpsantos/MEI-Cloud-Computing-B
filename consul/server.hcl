@@ -1,3 +1,6 @@
+server = true
+bootstrap_expect = 3
+
 connect {
   enabled = true
 }

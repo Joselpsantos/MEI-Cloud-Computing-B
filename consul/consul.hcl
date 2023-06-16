@@ -1,5 +1,5 @@
 data_dir = "/consul"
-encrypt = "Ult9Gn8qAqbXoWlJvOXMc/Es+GRJHxl1b8sYQR5i8n4="
+encrypt = "fnTf1ib8MbWPLGBtPeDl4pSlUixGMZaVh64UqU4ki0A="
 datacenter = "lb01"
 server = true
 log_level = "INFO"
@@ -21,4 +21,10 @@ tls {
 
 auto_encrypt {
   allow_tls = true
+}
+
+acl {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
 }

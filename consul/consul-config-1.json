@@ -1,0 +1,39 @@
+{
+    "datacenter": "test",
+    "node_name": "consul-server-1",
+    "bootstrap_expect": 3,
+    "bind_addr": "0.0.0.0",
+    "client_addr": "0.0.0.0",
+    "log_level": "DEBUG",
+    "server": true,
+    "ui": true,
+    "enable_script_checks": true,
+    "addresses": {
+      "https": "0.0.0.0"
+    },
+    "ports": {
+      "https": 8501
+    },
+    "check_update_interval": "1m",
+    "ca_file": "/opt/consul-server/tls/ca.crt",
+    "cert_file": "/opt/consul-server/tls/consul.crt",
+    "key_file": "/opt/consul-server/tls/consul.key",
+    "http_config": {
+      "response_headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
+    },
+    "leave_on_terminate" : true,
+    "retry_interval" : "5s",
+    "retry_join" : [
+          "consul-server-1.consul_consul:8301",
+          "consul-server-2.consul_consul:8301",
+          "consul-server-3.consul_consul:8301",
+   "nginx.consul_consul:8301"
+    ],
+    "server_name" : "consul-server-1.test",
+    "skip_leave_on_interrupt" : true,
+    "node_meta": {
+        "instance_type": "Docker container"
+    }
+  }
