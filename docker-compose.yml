@@ -9,6 +9,7 @@ services:
     container_name: loadBalancer
     ports:
       - 80:80
+      - 8000:8000
     #networks:
     #  cloudcomputing:
     #    ipv4_address: 172.18.0.1
@@ -62,11 +63,12 @@ services:
     #    ipv4_address: 172.18.0.4
     volumes:
       - ./app:/app     
-      #- ./app:/usr/share/nginx/html
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
 
   postgres1:
-    image: postgres
+    build:
+      context: ./
+      dockerfile: postgres/Dockerfile
     container_name: postgres1
     restart: always
     ports:
@@ -135,19 +137,24 @@ services:
     #    ipv4_address: 172.18.0.8
 
   pg_bouncer:
-    image: brainsam/pgbouncer:1.7.2
+    build: 
+      context: ./pgbouncer
+      dockerfile: ./Dockerfile
     container_name: pgBouncer
     restart: always
     ports:
       - 6432:6432
     environment:
-       - DB_USER= ${PGBOUNCER_USER}
-       - DB_PASSWORD= ${PGBOUNCER_PASSWORD}
-       - DB_HOST= ${PGBOUNCER_HOST}
-       - DB_NAME= ${PGBOUNCER_DB}
-       - DB_port= 5442
+       #- DB_USER= ${PGBOUNCER_USER}
+       #- DB_PASSWORD= ${PGBOUNCER_PASSWORD}
+       #- DB_HOST= ${PGBOUNCER_HOST}
+       #- DB_NAME= ${PGBOUNCER_DB}
+       #- DB_port= 5432
+       - POSTGRESQL_HOST= ${PGBOUNCER_HOST}
+       - POSTGRESQL_USERNAME= ${PGBOUNCER_USER}
+       - POSTGRESQL_PASSWORD= ${PGBOUNCER_PASSWORD}
     volumes:
-      - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./pgbouncer/pgbouncer.ini:/bitnami/pgbouncer/conf/pgbouncer.ini
     links:
       - postgres1
     #networks:

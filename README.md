@@ -30,9 +30,9 @@ Repositório para a solução da parte B do projeto final de cloud computing
   colocar o address: <ip_maquina_postgress>, port: 5432
 
   
-- for test
+- Visualizar o IP do container
   ```
-  python test.py
+  docker container inspect <container_id>
   ```
 ## Pretrained model
 | Model | Download |
