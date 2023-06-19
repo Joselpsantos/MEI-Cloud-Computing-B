@@ -30,7 +30,7 @@ Repositório para a solução da parte B do projeto final de cloud computing
   colocar o address: <ip_maquina_postgress>, port: 5432
 
   
-- Visualizar o IP do container
+- Visualizar o IP de um container
   ```
   docker container inspect <container_id>
   ```
@@ -144,17 +144,14 @@ Repositório para a solução da parte B do projeto final de cloud computing
 |    |—— install_pgAdmin.sh
 ```
 ## Code Details
-### Tested Platform
-- software
+### Docker-compose
+- Desenvolvimento
   ```
-  OS: Debian unstable (May 2021), Ubuntu LTS
-  Python: 3.8.5 (anaconda)
-  PyTorch: 1.7.1, 1.8.1
+
   ```
-- hardware
+- Produção
   ```
-  CPU: Intel Xeon 6226R
-  GPU: Nvidia RTX3090 (24GB)
+
   ```
 ### Hyper parameters
 ```
