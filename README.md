@@ -34,6 +34,11 @@ Repositório para a solução da parte B do projeto final de cloud computing
   ```
   docker container inspect <container_id>
   ```
+
+- Entrar na SHELL
+  ```
+  docker exec -it <container_id> sh
+  ```  
 ## Pretrained model
 | Model | Download |
 | ---     | ---   |
