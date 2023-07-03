@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  portainer:
+    image: portainer/portainer-ce
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      - "monitoring=true" # Para ser possivel utilizar o grafana
+
+volumes:
+  portainer_data:

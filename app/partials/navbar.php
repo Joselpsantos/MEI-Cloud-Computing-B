@@ -27,6 +27,9 @@
                         <a class="nav-link <?php echo ($_SERVER['PHP_SELF'] == '/websockets.php') ? 'active' : ''; ?>" href="websockets.php">WebSockets</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link <?php echo ($_SERVER['PHP_SELF'] == '/report.php') ? 'active' : ''; ?>" href="report.php">Report</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link <?php echo ($_SERVER['PHP_SELF'] == '/about.php') ? 'active' : ''; ?>" href="about.php">About</a>
                     </li>
                     <li class="nav-item">
